@@ -1,0 +1,639 @@
+[
+    {
+        "id": "b6d899b3.b5a5c8",
+        "type": "tab",
+        "label": "remote_tcp",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e35969b5.95a838",
+        "type": "comment",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "info": "//id is the number of the item on the screen of remote controller.\n//HAid is the name of the item on Home Assistant.\n//name is the name of the item on the screen of the remote controller.\n//type is the type of the item. 0: switch, 1: dimmer, 2: temperature controller\n\nmsg.config =   [{ id: 0, HAid: \"light.top\", name: \"Top\", type: 1},\n                { id: 1, HAid: \"light.sofa\", name: \"Sofa\", type: 1},\n                { id: 2, HAid: \"light.bed\", name: \"Bed\", type: 1},\n                { id: 3, HAid: \"light.table\", name: \"Table\", type: 1},\n                { id: 4, HAid: \"switch.pc_power\", name: \"Pc_power\", type: 0},\n                { id: 5, HAid: \"switch.pj_bright_mode\", name: \"PJ_bright\", type: 0},\n                { id: 6, HAid: \"climate.kombi\", name: \"Boiler\", type: 2},];\n                \nmsg.loop= {counter:0, max:msg.config.length};\nreturn msg;\n",
+        "x": 740,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "cf0b75ef.6be8b8",
+        "type": "tcp in",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "server",
+        "host": "",
+        "port": "5001",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "76182714.acce18",
+                "78e51a98.f53fa4"
+            ]
+        ]
+    },
+    {
+        "id": "bd50fda.5a0e9",
+        "type": "debug",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1070,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "6f5e1043.f1567",
+        "type": "tcp out",
+        "z": "b6d899b3.b5a5c8",
+        "host": "",
+        "port": "",
+        "beserver": "reply",
+        "base64": false,
+        "end": false,
+        "name": "",
+        "x": 1550,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "d4a29331.1ad2c",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "shape remote in",
+        "func": "if (msg.payload.id==99) return [null, msg]; \nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 440,
+        "y": 400,
+        "wires": [
+            [
+                "3fa8f282.3e775e"
+            ],
+            [
+                "20197106.270f4e"
+            ]
+        ]
+    },
+    {
+        "id": "76182714.acce18",
+        "type": "json",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "d4a29331.1ad2c"
+            ]
+        ]
+    },
+    {
+        "id": "20197106.270f4e",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "config file",
+        "func": "//id is the number of the item on the screen of remote controller.\n//HAid is the name of the item on Home Assistant.\n//name is the name of the item on the screen of the remote controller.\n//type is the type of the item. 0: switch, 1: dimmer, 2: temperature controller\n\nmsg.config =   [{ id: 0, HAid: \"light.top\", name: \"Top\", type: 1},\n                { id: 1, HAid: \"light.sofa\", name: \"Sofa\", type: 1},\n                { id: 2, HAid: \"light.bed\", name: \"Bed\", type: 1},\n                { id: 3, HAid: \"light.table\", name: \"Table\", type: 1},\n                { id: 4, HAid: \"switch.pc_power\", name: \"Pc_power\", type: 0},\n                { id: 5, HAid: \"switch.pj_bright_mode\", name: \"PJ_bright\", type: 0},\n                { id: 6, HAid: \"climate.kombi\", name: \"Boiler\", type: 2},];\n                \nmsg.loop= {counter:0, max:msg.config.length};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 620,
+        "y": 400,
+        "wires": [
+            [
+                "524d7209.45d0ac"
+            ]
+        ]
+    },
+    {
+        "id": "524d7209.45d0ac",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "set config to flow",
+        "func": "flow.set(\"config\",msg.config);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 400,
+        "wires": [
+            [
+                "9946c3d6.8cad"
+            ]
+        ]
+    },
+    {
+        "id": "9946c3d6.8cad",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "looper",
+        "func": "if(msg.loop.counter <= msg.loop.max-1)\n{\nmsg.loop={counter: msg.loop.counter+1, max:msg.loop.max};\nreturn msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1030,
+        "y": 400,
+        "wires": [
+            [
+                "123e25b3.59a56a"
+            ]
+        ]
+    },
+    {
+        "id": "123e25b3.59a56a",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "ask HA",
+        "func": "msg.payload = { entity_id: msg.config[msg.loop.counter-1].HAid};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 480,
+        "wires": [
+            [
+                "b9145865.20e318"
+            ]
+        ]
+    },
+    {
+        "id": "b9145865.20e318",
+        "type": "api-current-state",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "640a9cd6.647374",
+        "version": 1,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "override_topic": false,
+        "entity_id": "",
+        "state_type": "str",
+        "state_location": "",
+        "override_payload": "none",
+        "entity_location": "data",
+        "override_data": "msg",
+        "blockInputOverrides": false,
+        "x": 580,
+        "y": 480,
+        "wires": [
+            [
+                "9c62b26e.f4d15"
+            ]
+        ]
+    },
+    {
+        "id": "9c62b26e.f4d15",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "shape message",
+        "func": "if(msg.config[msg.loop.counter-1].type==2){\nmsg.payload = { id: msg.loop.counter-1 , name:msg.config[msg.loop.counter-1].name, state: msg.data.state ,type:msg.config[msg.loop.counter-1].type, value0: msg.data.attributes.current_temperature, value1:msg.data.attributes.temperature, mid:msg.config.length};\nreturn [null, msg];\n}\nelse{\nmsg.payload = { id: msg.loop.counter-1,name:msg.config[msg.loop.counter-1].name, state: msg.data.state , value0: msg.data.attributes.brightness, type:msg.config[msg.loop.counter-1].type, mid:msg.config.length};\nreturn msg;\n}\n\n\n//msg.payload = { id: msg.loop.counter-1,name:msg.config[msg.loop.counter-1].name, state: msg.data.state , slider: msg.data.attributes.brightness, svalid:msg.config[msg.loop.counter-1].svalid, mid:msg.config.length};\n//return msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 760,
+        "y": 480,
+        "wires": [
+            [
+                "5090aaec.7c1444"
+            ],
+            [
+                "21fd59da.fc5106"
+            ]
+        ]
+    },
+    {
+        "id": "5090aaec.7c1444",
+        "type": "range",
+        "z": "b6d899b3.b5a5c8",
+        "minin": "0",
+        "maxin": "254",
+        "minout": "0",
+        "maxout": "100",
+        "action": "scale",
+        "round": true,
+        "property": "payload.value0",
+        "name": "",
+        "x": 920,
+        "y": 460,
+        "wires": [
+            [
+                "21fd59da.fc5106"
+            ]
+        ]
+    },
+    {
+        "id": "21fd59da.fc5106",
+        "type": "change",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "on",
+                "fromt": "str",
+                "to": "1",
+                "tot": "num"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "off",
+                "fromt": "str",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "unavailable",
+                "fromt": "str",
+                "to": "0",
+                "tot": "str"
+            },
+            {
+                "t": "delete",
+                "p": "topic",
+                "pt": "msg"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "heat",
+                "fromt": "str",
+                "to": "1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 500,
+        "wires": [
+            [
+                "bd50fda.5a0e9",
+                "caf8dc3a.4b073",
+                "32167249.0232ae"
+            ]
+        ]
+    },
+    {
+        "id": "78e51a98.f53fa4",
+        "type": "debug",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 290,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "caf8dc3a.4b073",
+        "type": "json",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1430,
+        "y": 640,
+        "wires": [
+            [
+                "6f5e1043.f1567"
+            ]
+        ]
+    },
+    {
+        "id": "32167249.0232ae",
+        "type": "delay",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "300",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1290,
+        "y": 500,
+        "wires": [
+            [
+                "9946c3d6.8cad"
+            ]
+        ]
+    },
+    {
+        "id": "3fa8f282.3e775e",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "flow returner",
+        "func": "msg.config = flow.get(\"config\");\nflow.set(\"lastmessage\",msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 120,
+        "wires": [
+            [
+                "ba6fcca3.60d6a"
+            ]
+        ]
+    },
+    {
+        "id": "93ee03df.d6039",
+        "type": "api-call-service",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "640a9cd6.647374",
+        "service_domain": "homeassistant",
+        "service": "{}",
+        "data": "{}",
+        "mergecontext": "",
+        "output_location": "payload",
+        "output_location_type": "msg",
+        "mustacheAltTags": false,
+        "x": 1080,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "780c19a9.1d71c8",
+        "type": "range",
+        "z": "b6d899b3.b5a5c8",
+        "minin": "0",
+        "maxin": "100",
+        "minout": "0",
+        "maxout": "255",
+        "action": "scale",
+        "round": true,
+        "property": "payload.data.brightness",
+        "name": "",
+        "x": 900,
+        "y": 80,
+        "wires": [
+            [
+                "93ee03df.d6039"
+            ]
+        ]
+    },
+    {
+        "id": "ba6fcca3.60d6a",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "shape message",
+        "func": "//if(msg.payload.state) msg.payload = { service: \"turn_on\", data: {\"entity_id\": msg.config[msg.payload.id].HAid,\"brightness\": msg.payload.slider } };\n//else msg.payload = { service: \"turn_off\", data: {\"entity_id\": msg.config[msg.payload.id].HAid} };\n//return msg;\n\n\nif(msg.config[msg.payload.id].type==2){\n//msg.payload = { id: msg.loop.counter-1 , name:msg.config[msg.loop.counter-1].name, state: msg.data.state , slider: msg.data.new_state.attributes.temperature, svalid:msg.data.new_state.attributes.current_temperature, mid:msg.config.length};\nif(msg.payload.state) msg.payload = { service: \"set_temperature\", data: {\"entity_id\": msg.config[msg.payload.id].HAid, \"temperature\": msg.payload.value1 } };\nelse msg.payload = { service: \"turn_off\", data: {\"entity_id\": msg.config[msg.payload.id].HAid}, \"hvac_mode\":\"off\" };\nreturn [null, msg];\n}\nelse{\nif(msg.payload.state) msg.payload = { service: \"turn_on\", data: {\"entity_id\": msg.config[msg.payload.id].HAid,\"brightness\": msg.payload.value0 } };\nelse msg.payload = { service: \"turn_off\", data: {\"entity_id\": msg.config[msg.payload.id].HAid} };\nreturn msg;\n}\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 740,
+        "y": 120,
+        "wires": [
+            [
+                "780c19a9.1d71c8"
+            ],
+            [
+                "7eb1557a.27117c"
+            ]
+        ]
+    },
+    {
+        "id": "7eb1557a.27117c",
+        "type": "api-call-service",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "640a9cd6.647374",
+        "service_domain": "climate",
+        "service": "",
+        "data": "",
+        "mergecontext": "",
+        "output_location": "payload",
+        "output_location_type": "msg",
+        "mustacheAltTags": false,
+        "x": 910,
+        "y": 140,
+        "wires": [
+            [
+                "20cf39c9.02b586"
+            ]
+        ]
+    },
+    {
+        "id": "20cf39c9.02b586",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "turn on climate",
+        "func": "if(msg.payload.service==\"set_temperature\"){\nmsg.payload = { service: \"turn_on\", data: {\"entity_id\": msg.payload.data.entity_id} };\nreturn msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1080,
+        "y": 140,
+        "wires": [
+            [
+                "54ac6616.4f9eb8"
+            ]
+        ]
+    },
+    {
+        "id": "54ac6616.4f9eb8",
+        "type": "api-call-service",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "640a9cd6.647374",
+        "service_domain": "climate",
+        "service": "",
+        "data": "",
+        "mergecontext": "",
+        "output_location": "payload",
+        "output_location_type": "msg",
+        "mustacheAltTags": false,
+        "x": 1250,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "db6f4d74.1e3e4",
+        "type": "server-state-changed",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "server": "640a9cd6.647374",
+        "version": 1,
+        "entityidfilter": "light,switch,climate",
+        "entityidfiltertype": "substring",
+        "outputinitially": false,
+        "state_type": "str",
+        "haltifstate": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "outputs": 1,
+        "output_only_on_state_change": false,
+        "x": 200,
+        "y": 660,
+        "wires": [
+            [
+                "9b40b692.ecc7e8"
+            ]
+        ]
+    },
+    {
+        "id": "b59c7e7d.a63d1",
+        "type": "range",
+        "z": "b6d899b3.b5a5c8",
+        "minin": "0",
+        "maxin": "254",
+        "minout": "0",
+        "maxout": "100",
+        "action": "scale",
+        "round": true,
+        "property": "payload.value0",
+        "name": "",
+        "x": 780,
+        "y": 640,
+        "wires": [
+            [
+                "ed0a2708.053c88"
+            ]
+        ]
+    },
+    {
+        "id": "ed0a2708.053c88",
+        "type": "change",
+        "z": "b6d899b3.b5a5c8",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "on",
+                "fromt": "str",
+                "to": "1",
+                "tot": "num"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "off",
+                "fromt": "str",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "unavailable",
+                "fromt": "str",
+                "to": "0",
+                "tot": "str"
+            },
+            {
+                "t": "change",
+                "p": "payload.state",
+                "pt": "msg",
+                "from": "heat",
+                "fromt": "str",
+                "to": "1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 960,
+        "y": 680,
+        "wires": [
+            [
+                "a6ef9405.9c2918"
+            ]
+        ]
+    },
+    {
+        "id": "3f0efccf.f20484",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "shape remote out",
+        "func": "for (var i=0; i<msg.config.length;i++) {\nif(msg.topic==msg.config[i].HAid){\n\nif(msg.config[i].type==2){//climate controller\nmsg.payload = { id: msg.config[i].id, state: msg.data.new_state.state , value0: msg.data.new_state.attributes.current_temperature, value1:msg.data.new_state.attributes.temperature};\n//msg.payload = { id: msg.config[i].id, state: msg.data.new_state.state , svalid:msg.data.new_state.attributes.current_temperature+msg.data.new_state.attributes.min_temp, slider: msg.data.new_state.attributes.temperature};\nreturn [null, msg];\n}\nelse{\nmsg.payload = { id: msg.config[i].id, state: msg.data.new_state.state , value0: msg.data.new_state.attributes.brightness};  \nreturn [msg];\n}\n\n}\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 610,
+        "y": 660,
+        "wires": [
+            [
+                "b59c7e7d.a63d1"
+            ],
+            [
+                "ed0a2708.053c88"
+            ]
+        ]
+    },
+    {
+        "id": "9b40b692.ecc7e8",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "flow returner",
+        "func": "msg.config = flow.get(\"config\");\nmsg.lastmessage = flow.get(\"lastmessage\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 660,
+        "wires": [
+            [
+                "3f0efccf.f20484"
+            ]
+        ]
+    },
+    {
+        "id": "a6ef9405.9c2918",
+        "type": "function",
+        "z": "b6d899b3.b5a5c8",
+        "name": "feedback destroyer",
+        "func": "if(msg.payload.state!=msg.lastmessage.state&&msg.payload.value0!=msg.lastmessage.value0) return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1150,
+        "y": 680,
+        "wires": [
+            [
+                "caf8dc3a.4b073"
+            ]
+        ]
+    },
+    {
+        "id": "640a9cd6.647374",
+        "type": "server",
+        "z": "",
+        "name": "Home Assistant"
+    }
+]
