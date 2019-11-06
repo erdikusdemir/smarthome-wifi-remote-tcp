@@ -37,8 +37,9 @@ Hardware is consist of;
 4.4. Deploy the node and everything should works.  
 
 # To do list:
-1. Code is slow for now. Code spend time while sync process with Node-Red.   
-2. Previos message needs to be ereased somehow.  
+1. Code is slow for now. ESP spends time while sync process with Node-Red server.   
+2. Previos messages needs to be ereased from the memory of the ESP.  
+3. Memory of ESP might be used to store the items. This might improve the booting time. Aim is faster than 0.5s.
 
 # Limitations:  
 The number of an item is fixed to 20 because of code restrictions but it is possible to increase inside the Arduino code.  
