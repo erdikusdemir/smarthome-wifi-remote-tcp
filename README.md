@@ -1,7 +1,8 @@
 
 
 
-I am working on this project on left over times from my PhD thesis.
+I am working on this project on left over times from my PhD thesis.  
+For the version based on MQTT: https://github.com/erdikusdemir/smarthome-wifi-remote
 
 # DESCRIPTION 
 
